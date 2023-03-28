@@ -9,6 +9,7 @@
 
 import Foundation
 import Dispatch
+import Zip
 
 // MARK: - FileDestination
 /// A standard destination that outputs log details to a file
@@ -193,7 +194,10 @@ open class FileDestination: BaseQueuedDestination {
             haveLoggedAppDetails = false
 
             do {
-                try fileManager.moveItem(atPath: writeToFileURL.path, toPath: archiveToFileURL.path)
+                try Zip.zipFiles(paths: [writeToFileURL],
+                                 zipFilePath: archiveToFileURL,
+                                 password: nil,
+                                 progress: nil)
             }
             catch let error as NSError {
                 openFile()

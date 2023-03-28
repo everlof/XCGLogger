@@ -233,7 +233,7 @@ open class AutoRotatingFileDestination: FileDestination {
     open func rotateFile() {
         var archiveFolderURL: URL = (self.archiveFolderURL ?? type(of: self).defaultLogFolderURL)
         archiveFolderURL = archiveFolderURL.appendingPathComponent("\(baseFileName)\(archiveSuffixDateFormatter.string(from: Date()))")
-        archiveFolderURL = archiveFolderURL.appendingPathExtension(fileExtension)
+        archiveFolderURL = archiveFolderURL.appendingPathExtension("zip")
         rotateFile(to: archiveFolderURL, closure: autoRotationCompletion)
 
         currentLogStartTimeInterval = Date().timeIntervalSince1970
