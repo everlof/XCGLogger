@@ -76,7 +76,7 @@ open class AutoRotatingFileDestination: FileDestination {
     }
 
     /// Size of the current log file
-    internal var currentLogFileSize: UInt64 = 0
+    open var currentLogFileSize: UInt64 = 0
 
     /// Start time of the current log file
     internal var currentLogStartTimeInterval: TimeInterval = 0
@@ -224,6 +224,8 @@ open class AutoRotatingFileDestination: FileDestination {
         return archivedFileURLs
     }
 
+    var isRotating: Bool = false
+
     /// Rotate the current log file.
     ///
     /// - Parameters:   None.
@@ -231,6 +233,8 @@ open class AutoRotatingFileDestination: FileDestination {
     /// - Returns:      Nothing.
     ///
     open func rotateFile() {
+        isRotating = true
+
         var archiveFolderURL: URL = (self.archiveFolderURL ?? type(of: self).defaultLogFolderURL)
         archiveFolderURL = archiveFolderURL.appendingPathComponent("\(baseFileName)\(archiveSuffixDateFormatter.string(from: Date()))")
         archiveFolderURL = archiveFolderURL.appendingPathExtension("zip")
@@ -240,6 +244,8 @@ open class AutoRotatingFileDestination: FileDestination {
         currentLogFileSize = 0
 
         cleanUpLogFiles()
+
+        isRotating = false
     }
 
     /// Determine if the log file should be rotated.
@@ -251,6 +257,8 @@ open class AutoRotatingFileDestination: FileDestination {
     ///     - false:    The log file doesn't have to be rotated.
     ///
     open func shouldRotate() -> Bool {
+        guard isRotating == false else { return false }
+
         // Do not rotate until critical setup has been completed so that we do not accidentally rotate once to the defaultLogFolderURL before determining the desired log location
         guard archiveFolderURL != nil else { return false }
         

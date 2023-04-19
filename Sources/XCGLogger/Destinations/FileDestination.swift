@@ -198,6 +198,7 @@ open class FileDestination: BaseQueuedDestination {
                                  zipFilePath: archiveToFileURL,
                                  password: nil,
                                  progress: nil)
+                try fileManager.removeItem(at: writeToFileURL)
             }
             catch let error as NSError {
                 openFile()
